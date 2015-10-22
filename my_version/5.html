@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>Assignment 5</title>
+</head>
+<body>
+<span id="errors"></span>
+<form action="#" onsubmit="return checkForm();">
+<label for="creditcardnumber">Credit card number</label>
+<input type="text" size="16" id="creditcardnumber"></input>
+<!-- input type="text" size="4" id="creditcardnumber2"></input>
+<input type="text" size="4" id="creditcardnumber3"></input>
+<input type="text" size="4" id="creditcardnumber4"></input -->
+
+<span>Credit card expiration date</span>
+<label for="creditcardnumber_month">month</label>
+<select id="ccn_m">
+<option value="01">January</option>
+<option value="02">February</option>
+<option value="03">March</option>
+<option value="04">April</option>
+<option value="05">May</option>
+<option value="06">June</option>
+<option value="07">July</option>
+<option value="08">August</option>
+<option value="09">September</option>
+<option value="10">October</option>
+<option value="11">November</option>
+<option value="12">December</option>
+</select>
+
+<select id="ccn_d">
+</select>
+
+<select id="ccn_y">
+</select>
+
+<label for="securitycode">Security code</label>
+<input type="password" size="4" id="securitycode"></input>
+
+<input type="submit" value="check it" onclick="checkEverything(this.form)"></input>
+
+</form>
+<script type="text/javascript">
+var days = document.getElementById('ccn_d');
+for(i = 1; i <= 31; i += 1) {
+    var newoption = document.createElement("option");
+    newoption.value = i;
+    newoption.text = i;
+    days.appendChild(newoption);
+}
+
+var years = document.getElementById('ccn_y');
+for (i = 0; i < 4; i += 1) {
+    var y = new Date().getFullYear();
+    var newoption = document.createElement("option");
+    newoption.value = i + y;
+    newoption.text = i + y;
+    years.appendChild(newoption);
+}
+
+
+var months = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+function isLeapYear(myYear) {
+    if (myYear % 4 === 0 && myYear % 100 !== 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getMaxDaysFor(myYear, myMonth) {
+    if (myMonth === '02') {
+        if (isLeapYear(myYear)) {
+            return 29;
+        } else {
+            return 28;
+        }
+    } else {
+        return months[myMonth - 1];
+    }
+}
+
+function isDateValid(myYear, myMonth, myDay) {
+    return myDay <= getMaxDaysFor(myYear, myMonth);
+}
+
+function checkForm() {
+  return true;
+}
+
+function appendError(myMessage) {
+      var a = document.getElementById('errors');
+      var b = document.createElement('span');
+      b.innerHTML = myMessage;
+      a.appendChild(b);
+}
+
+function checkEverything(myform) {
+  var errors = document.getElementById('errors');
+  errors.innerHTML = '';
+  var isCreditCardNumber = /([0-9]{4}-){3}[0-9]/.test(myform['creditcardnumber'].value);
+  if (!isCreditCardNumber) {
+      appendError("this is not a credit card number");
+  }
+  var isExpirationDateValid = isDateValid(myform['ccn_y'].value, myform['ccn_m'].value, myform['ccn_d'].value);
+  if (!isExpirationDateValid) {
+      appendError("this is not an expiration date");
+  }
+  var isCCV = /^[0-9]{3,4}$/.test(myform['securitycode'].value);
+  if (!isCCV) {
+      appendError("this is not a security code");
+  }
+  if (isCreditCardNumber && isExpirationDateValid && isCCV) {
+      alert('Every fields are okay');
+  }
+}
+</script>
+</body>
+</html>
